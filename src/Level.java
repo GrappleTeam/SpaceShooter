@@ -38,11 +38,17 @@ public class Level {
 		mobArray = new ArrayList<Mob>();
 		this.background = background0;
 		thisLevelNumber=i;
+		mobArray.add(new Mob_Tick(20, 20));
+		mobArray.add(new Mob_Tick(20, 50));
+		mobArray.add(new Mob_Tick(220, 20));
+		mobArray.add(new Mob_Tick(330, 360));
+		mobArray.add(new Mob_Tick(550, 250));
+		mobArray.add(new Mob_Tick(60, 620));
 	}
 	
 	public BufferedImage getImage(String imageUrl){
 		try {
-			return ImageIO.read(DisplayPanel.class.getResource(imageUrl));
+			return ImageIO.read(Level.class.getResource(imageUrl));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;

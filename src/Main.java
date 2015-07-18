@@ -4,11 +4,11 @@ public class Main
 	{
 		boolean running = true;
 		
-		DisplayFrame df = new DisplayFrame();
-		Thread th = new Thread(df.d); 
+		Display_Frame df = new Display_Frame();
+		Thread th = new Thread(df.g); 
 		th.start();
 		while(running){
-			df.d.run();
+			df.g.run();
 		}
 	}
 }

@@ -1,3 +1,5 @@
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -6,25 +8,33 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 
-public class DisplayPanel extends JPanel implements KeyListener, Runnable, MouseListener, MouseMotionListener{
+public class Game_Logic implements KeyListener, Runnable, MouseListener, MouseMotionListener{
 	
-	static int currentLevel;
-	final int maxLevel = 5;
+	Display_Panel j;
+	public enum gamestate { main_screen, title_screen, gameplay_screen }
+	public gamestate current_gamestate = gamestate.main_screen;
+	
 	Mob character;
-		
+	boolean musicOn = true;
 	boolean upButtonPressed = false;
 	boolean leftButtonPressed = false;
 	boolean rightButtonPressed = false; 
 	boolean downButtonPressed = false;
 	boolean buttonReleased= false;
-		
-	static int mouseX;
-	static int mouseY;	
+	static ArrayList<Level> levelArray;
 	static boolean mousePressed = false;
+	static int mouseX;
+	static int mouseY;
+	static int currentLevel;
+	int displacement;
+	int cycle = 0;
+	final int maxLevel = 5;
 		
 		BufferedImage[] BackgroundImages = {
 				getImage("graphics/sword-and-sworcery.png"),
@@ -32,12 +42,18 @@ public class DisplayPanel extends JPanel implements KeyListener, Runnable, Mouse
 				getImage("graphics/whiteBackground.png"),
 		};
 		
-	DisplayPanel(){
+	Game_Logic(){
+		j = new Display_Panel();
+		j.setPreferredSize(new Dimension(900, 600));
 		character = new Player(0,0,20,20);
+
+		currentLevel = 0;
+		levelArray = new ArrayList<Level>();
+		levelArray.add(new Level(0, new Tile(0,0,getImage("graphics/whiteBackground.png"))));
 	}
 	public BufferedImage getImage(String imageUrl){
 		try {
-			return ImageIO.read(DisplayPanel.class.getResource(imageUrl));
+			return ImageIO.read(Game_Logic.class.getResource(imageUrl));
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
@@ -48,9 +64,14 @@ public class DisplayPanel extends JPanel implements KeyListener, Runnable, Mouse
 		processInput();
 	
 		character.move();
-		character.checkWindowBoundaries(getWidth(), getHeight());
+		character.checkWindowBoundaries(j.getWidth(), j.getHeight());
 		
-		repaint();
+		for(Mob c: levelArray.get(currentLevel).getLevelMobs()){
+			c.pattern();
+			c.checkWindowBoundaries(j.getWidth(), j.getHeight());
+		}
+		
+		j.repaint();
 		
 		try{Thread.sleep(18);}
 		catch(InterruptedException e){
@@ -58,12 +79,7 @@ public class DisplayPanel extends JPanel implements KeyListener, Runnable, Mouse
 		}
 
 	}
-	public void paintComponent(Graphics g){
-		super.paintComponent(g);	
-		g.drawImage(BackgroundImages[2],0,0,null);
-		g.drawImage(character.getSprite(), character.getX(), character.getY(), this);
-			
-	  }
+	
 	//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 	//KEYLISTENER
 	//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -91,7 +107,7 @@ public class DisplayPanel extends JPanel implements KeyListener, Runnable, Mouse
 			case KeyEvent.VK_ESCAPE:
 			case KeyEvent.VK_Q:		System.exit(0);
 												
-			case KeyEvent.VK_L:		DisplayFrame.levelChanged = true;	break;		
+			case KeyEvent.VK_L:		Display_Frame.levelChanged = true;	break;		
 			default: break;
 			}	
 		}
@@ -172,5 +188,25 @@ public class DisplayPanel extends JPanel implements KeyListener, Runnable, Mouse
 			e.consume();
 		}
 	//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+		
+		public JPanel getJPanel() { return j; }
+
+		public class Display_Panel extends JPanel{
+			public void paintComponent(Graphics g){
+				super.paintComponent(g);
+				
+			//draing the background
+				g.drawImage(BackgroundImages[2],0,0,null);
+				
+			//drawing the mobs
+				for(Mob m: levelArray.get(currentLevel).getLevelMobs())
+					g.drawImage(m.getSprite(), m.getX(), m.getY(), this);
+			
+			//drawing the character
+			g.drawImage(character.getSprite(), character.getX(), character.getY(), this);
+				
+			}
+		}
+
 }
 
