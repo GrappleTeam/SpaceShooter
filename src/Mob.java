@@ -20,6 +20,7 @@ public class Mob extends Mover {
   public int state = 0;
   protected int jumpHeight = 7;
   public int distanceToGun;
+  public ArrayList<Bullet> bulletArray;
   
   public Mob(String name, int damage, int health, int x, int y){
 	  this.name = name;
@@ -27,6 +28,8 @@ public class Mob extends Mover {
 	  this.health = health;
 	  this.x = x;
 	  this.y = y;
+	  bulletArray = new ArrayList<Bullet>();
+	  bulletArray.add(Bullet.getBullet(50, 50));
   }
   
   //Primary attributes

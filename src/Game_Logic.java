@@ -21,6 +21,7 @@ public class Game_Logic implements KeyListener, Runnable, MouseListener, MouseMo
 	public gamestate current_gamestate = gamestate.main_screen;
 	
 	Mob character;
+	Bullet bullet;
 	boolean musicOn = true;
 	boolean upButtonPressed = false;
 	boolean leftButtonPressed = false;
@@ -46,7 +47,6 @@ public class Game_Logic implements KeyListener, Runnable, MouseListener, MouseMo
 		j = new Display_Panel();
 		j.setPreferredSize(new Dimension(900, 600));
 		character = new Player(0,0,20,20);
-
 		currentLevel = 0;
 		levelArray = new ArrayList<Level>();
 		levelArray.add(new Level(0, new Tile(0,0,getImage("graphics/whiteBackground.png"))));
@@ -69,6 +69,9 @@ public class Game_Logic implements KeyListener, Runnable, MouseListener, MouseMo
 		for(Mob c: levelArray.get(currentLevel).getLevelMobs()){
 			c.pattern();
 			c.checkWindowBoundaries(j.getWidth(), j.getHeight());
+			for(Bullet b: c.bulletArray){
+				b.move();
+			}
 		}
 		
 		j.repaint();
@@ -99,10 +102,12 @@ public class Game_Logic implements KeyListener, Runnable, MouseListener, MouseMo
 			case KeyEvent.VK_S:		//-------------
 			case KeyEvent.VK_DOWN: 	downButtonPressed = true;	break;
 			
-//			case KeyEvent.VK_SPACE:	character.setX(character.weaponArray.get(0).getHitX());
+			case KeyEvent.VK_SPACE:	character.bulletArray.add(Bullet.getBullet(character.x, character.y));
+									//new bullet
+//									character.setX(character.weaponArray.get(0).getHitX());
 //									character.setY(character.weaponArray.get(0).getHitY());
 //									character.setYspeed(0);
-//									break;
+									break;
 			
 			case KeyEvent.VK_ESCAPE:
 			case KeyEvent.VK_Q:		System.exit(0);
@@ -199,8 +204,12 @@ public class Game_Logic implements KeyListener, Runnable, MouseListener, MouseMo
 				g.drawImage(BackgroundImages[2],0,0,null);
 				
 			//drawing the mobs
-				for(Mob m: levelArray.get(currentLevel).getLevelMobs())
+				for(Mob m: levelArray.get(currentLevel).getLevelMobs()){
 					g.drawImage(m.getSprite(), m.getX(), m.getY(), this);
+					for(Bullet b: m.bulletArray) {
+						g.drawImage(Bullet.bulletImage, b.getX(), b.getY(), this);
+					}
+				}
 			
 			//drawing the character
 			g.drawImage(character.getSprite(), character.getX(), character.getY(), this);

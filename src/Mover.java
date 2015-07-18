@@ -47,6 +47,9 @@ public class Mover {
 	  public void setYspeed(int n)	{this.yspeed = n;}
 	  public void setXacc(int n)	{this.xacc = n;}
 	  public void setYacc(int n)	{this.yacc = n;}
+	  public void setXfriction(int n) {this.xfriction = n;}
+	  public void setYfriction(int n) {this.yfriction = n;}
+
 //Boundary Checkers=============================================
 	  public void move(){
 		  
