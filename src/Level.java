@@ -44,6 +44,10 @@ public class Level {
 		mobArray.add(new Mob_Tick(330, 360));
 		mobArray.add(new Mob_Tick(550, 250));
 		mobArray.add(new Mob_Tick(60, 620));
+		mobArray.add(new Mob_Tick(550, 250));
+		mobArray.add(new Mob_BigBug(656, 620));
+		mobArray.add(new Mob_BigBug(706, 598));
+
 	}
 	
 	public BufferedImage getImage(String imageUrl){

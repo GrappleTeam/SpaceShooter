@@ -76,7 +76,7 @@ public class Game_Logic implements KeyListener, Runnable, MouseListener, MouseMo
 		
 		j.repaint();
 		
-		try{Thread.sleep(18);}
+		try{Thread.sleep(15);}
 		catch(InterruptedException e){
 			System.out.println("Thread was interrupted.");
 		}
